@@ -4,6 +4,7 @@ import {
 } from "../../controllers/create-users/protocols";
 import { MongoClient } from "../../database/mongo";
 import { User } from "../../models/user";
+import { MongoUser } from "../mongo-protocols";
 
 export class MongoCreateUserRepository implements ICreateUserRepository {
   async createUser(params: CreateUsersParams): Promise<User> {
@@ -12,7 +13,7 @@ export class MongoCreateUserRepository implements ICreateUserRepository {
       .insertOne(params);
 
     const user = await MongoClient.db
-      .collection<Omit<User, "id">>("users")
+      .collection<MongoUser>("users")
       .findOne({ _id: insertedId });
     if (!user) {
       throw new Error(" User not created");
